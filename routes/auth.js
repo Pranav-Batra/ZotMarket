@@ -70,13 +70,24 @@ passport.authenticate('google', {failureRedirect: '/'}),
     res.redirect('http://localhost:3001/')
 })
 
+router.get('/user', (req, res) => {
+    if (req.user)
+    {
+        res.json({loggedIn: true, user: req.user})
+    }
+    else
+    {
+        res.json({loggedIn: false, user: null})
+    }
+})
+
 router.get('/logout', (req, res, next) => {
     req.logout(err => {
         if (err)
         {
             return next(err)
         }
-        res.redirect('/marketplace')
+        res.redirect('http://localhost:3001/')
     })
 })
 

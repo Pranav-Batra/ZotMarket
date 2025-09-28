@@ -1,0 +1,78 @@
+.item-detail-container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 2rem;
+    padding: 2rem;
+    max-width: 1200px;
+    margin: auto;
+  }
+  
+  /* Left side (Image) */
+  .item-image-container {
+    flex: 2;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .item-image {
+    width: 100%;
+    max-height: 80vh;
+    object-fit: cover;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  }
+  
+  /* Right side (Details) */
+  .item-info-container {
+    flex: 1;
+    background: #fff;
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .item-title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin: 0;
+  }
+  
+  .item-price {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #007bff;
+  }
+  
+  .item-description {
+    font-size: 1rem;
+    line-height: 1.5;
+    color: #333;
+  }
+  
+  .item-date {
+    font-size: 0.9rem;
+    color: #777;
+  }
+  
+  /* Save button consistency */
+  .item-info-container button {
+    align-self: flex-start;
+    padding: 0.5rem 1rem;
+    background: #28a745;
+    color: white;
+    font-weight: 600;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+  }
+  
+  .item-info-container button:hover {
+    background: #1e7e34;
+  }
+  

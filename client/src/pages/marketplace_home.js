@@ -1,6 +1,7 @@
 import { React } from 'react'
 import { useEffect, useState } from 'react'
 import { Navigate, useNavigate } from 'react-router-dom'
+import '../styles/Home.css'
 
 function Item({item}) 
 {
@@ -9,11 +10,18 @@ function Item({item})
         navigate(`/marketplace/${item.id}/detail`)
     }
     return (
-        <div key={item.id}>
-            <h2>{item.title}</h2>
-            <h2>{item.price}</h2>
-            <h3>{item.created_at}</h3>
-            <button onClick={handleOnClick}>View in Detail</button>
+        <div className="item-card" key={item.id}>
+            <div className="item-image">
+                <img src="https://placehold.co/600x400" alt={item.title}></img>
+            </div>
+            <div className="item-info">
+                <h2 className="item-title">{item.title}</h2>
+                <p className="item-price">${item.price}</p>
+                <p className="item-date">{new Date(item.created_at).toLocaleDateString()}</p>
+                <button className="view-button" onClick={handleOnClick}>
+                    View in Detail
+                </button>
+            </div>
         </div>
     )
 }
@@ -24,7 +32,6 @@ function Home()
     const [items, setItems] = useState([])
     useEffect(() => 
     {
-        console.log("Effect started.")
         const fetchData = async () => {
             try
             {
@@ -45,14 +52,18 @@ function Home()
     fetchData()
     }, [])
     return (
-        <div>
-            <h1>Home Page</h1>
+        <div className='home-container'>
+            <h1 className="home-title">Markteplace</h1>
             {items.length === 0 ? 
-            (<p>Loading items... </p>) : 
-            (items.map((item) => {
+            (<p>Loading items... </p>
+            ) : (
+            <div className="items-grid">
+                {items.map((item) => {
                 return <Item item={item} />
-            }))}
+            })}
         </div>
+    )}
+    </div>
     )
 }
 

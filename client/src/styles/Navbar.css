@@ -1,0 +1,71 @@
+/* Navbar container */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #343a40; /* dark background */
+    padding: 0.75rem 2rem;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  
+  /* Logo/brand */
+  .navbar-logo {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #ffffff;
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+  
+  .navbar-logo:hover {
+    color: #f8c400; /* highlight color */
+  }
+  
+  /* Right-side container */
+  .navbar-right {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  
+  /* General nav buttons */
+  .nav-button {
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    border: none;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.1s ease;
+  }
+  
+  /* Login button */
+  .nav-button.login {
+    background: #007bff;
+    color: white;
+  }
+  
+  .nav-button.login:hover {
+    background: #0056b3;
+    transform: translateY(-2px);
+  }
+  
+  /* Logout button */
+  .nav-button.logout {
+    background: #dc3545;
+    color: white;
+  }
+  
+  .nav-button.logout:hover {
+    background: #a71d2a;
+    transform: translateY(-2px);
+  }
+  
+  /* Make sure PostButton aligns nicely */
+  .navbar-right button {
+    margin-left: 0.5rem;
+  }
+  

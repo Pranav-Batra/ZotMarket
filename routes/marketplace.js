@@ -101,13 +101,14 @@ router.post('/save/:id', async (req, res) => {
     const id = req.params.id
     if (!req.user)
     {
-        res.status(404).send("Invalid permissions.")
+        return res.status(404).send("Invalid permissions.")
     }
     try
     {
         const saved_item = await db.query('INSERT INTO saved_items (saved_item_id, user_saving_id, created_at) VALUES ($1, $2, NOW()) RETURNING *', [id, req.user.id])
-        console.log(saved_item)
-        res.status(200).send("Successfully saved item.")
+        console.log(saved_item.rows)
+        res.json(saved_item)
+        // res.status(200).send("Successfully saved item.")
     }
     catch (err)
     {
