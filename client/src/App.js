@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Home from './pages/marketplace_home'
 import Navbar from './components/navbar';
 import ItemDetailView from './pages/item_detail_view'
+import NewPost from './forms/new_item';
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
       <Routes>
         <Route path='/' element={<Home />} />
         <Route path='/marketplace/:id/detail' element={<ItemDetailView />} />
+        <Route path='/marketplace/new' element={<NewPost />} />
       </Routes>
     </Router>
   </div>

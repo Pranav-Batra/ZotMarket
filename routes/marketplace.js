@@ -55,14 +55,17 @@ router.put('/:id', async (req, res) => {
 })
 
 router.post('/new', async (req, res) => {
+    console.log(req)
     const {title, image_url, description, status, price} = req.body
     const userID = req.user.id
+    console.log(req.user)
     try
     {
         const inserted_item = await db.query('INSERT INTO items (title, image_url, description, status, price, user_id) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *', 
         [title, image_url, description, status, price, userID])
         console.log(inserted_item.rows)
-        res.status(200).send("Successfully created item.")
+        res.json(inserted_item.rows)
+        // res.status(200).send("Successfully created item.")
     }
     catch (err)
     {

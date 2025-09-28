@@ -1,5 +1,6 @@
 import {React} from 'react'
 import { Link } from 'react-router-dom';
+import PostButton from './post_button';
 
 
 function Navbar() 
@@ -10,6 +11,7 @@ function Navbar()
             <a href="http://localhost:3000/auth/google/">
                 <button>Login with Google</button>
             </a>
+            <PostButton />
         </nav>
     )
 }

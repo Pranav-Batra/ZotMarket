@@ -66,6 +66,7 @@ passport.authenticate('google', {scope: ['profile', 'email']}))
 router.get('/google/callback', 
 passport.authenticate('google', {failureRedirect: '/'}),
 (req, res) => {
+    console.log(req.user)
     res.redirect('http://localhost:3001/')
 })
 
