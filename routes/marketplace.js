@@ -4,25 +4,36 @@ router = express.Router()
 
 
 router.get('/', async (req, res) => {
-    console.log("Marketplace GET activated.")
     try
     {
         const items = await db.query('SELECT * FROM items')
         console.log(items.rows)
-        res.send(items.rows)
+        res.json(items.rows)
     }
     catch (err)
     {
         console.error(err)
         res.status(500).send("DB request failed. ")
     }
-    res.send('items')
     //queries db for all posted items
 })
 
+router.get('/:id/detail', async (req, res) => {
+    try
+    {
+        const detailItem = await db.query('SELECT * FROM items WHERE id=$1', [req.params.id])
+        res.json(detailItem.rows[0])
+    }
+    catch (err)
+    {
+        console.error(err)
+        res.status(500).send("DB Request Failed.")
+    }
+})
 router.put('/:id', async (req, res) => {
     const id = req.params.id
-    if (req.user.id !== id)
+    const user_who_posted_id = db.query('SELECT user_id FROM items WHERE id=$1', [id])
+    if (req.user.id !== user_who_posted_id)
     {
         res.status(404).send("Invalid permissions. ")
         return
@@ -63,7 +74,8 @@ router.post('/new', async (req, res) => {
 
 router.delete('/:id', async (req, res) => {
     const id = req.params.id
-    if (req.user.id !== id)
+    const user_who_posted_id = db.query('SELECT user_id FROM items WHERE id=$1', [id])
+    if (req.user.id !== user_who_posted_id)
     {
         res.status(404).send("Invalid permissions.")
         return
@@ -80,6 +92,25 @@ router.delete('/:id', async (req, res) => {
         res.status(500).send("Internal Server Error. ")
     }
     //get item from db, check if user is authorized, delete if they are
+})
+
+router.post('/save/:id', async (req, res) => {
+    const id = req.params.id
+    if (!req.user)
+    {
+        res.status(404).send("Invalid permissions.")
+    }
+    try
+    {
+        const saved_item = await db.query('INSERT INTO saved_items (saved_item_id, user_saving_id, created_at) VALUES ($1, $2, NOW()) RETURNING *', [id, req.user.id])
+        console.log(saved_item)
+        res.status(200).send("Successfully saved item.")
+    }
+    catch (err)
+    {
+        console.error("Error: ", err)
+        res.status(500).send("Internal Server Error.")
+    }
 })
 
 module.exports = router;
