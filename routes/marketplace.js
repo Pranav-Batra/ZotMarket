@@ -4,11 +4,36 @@ router = express.Router()
 
 
 router.get('/', async (req, res) => {
+    const {category, minPrice, maxPrice, uploadedAfter} = req.query
+    var query = 'SELECT * FROM items WHERE TRUE'
+    let placeholder = 1
+    queryParams = []
+
+    if (category)
+    {
+        query += ` AND category = $${placeholder++}`
+        queryParams.push(category)
+    }
+    if (minPrice)
+    {
+        query += ` AND price >= $${placeholder++}`
+        queryParams.push(Number(minPrice))
+    }
+    if (maxPrice)
+    {
+        query += ` AND price <= $${placeholder++}`
+        queryParams.push(Number(maxPrice))
+    }
+    if (uploadedAfter)
+    {
+        query += ` AND created_at >= $${placeholder++}`
+        queryParams.push(new Date(uploadedAfter))
+    }
+    query += ' ORDER BY created_at DESC'
     try
     {
-        const items = await db.query('SELECT * FROM items ORDER BY created_at DESC')
-        console.log(items.rows)
-        res.json(items.rows)
+        const result = await db.query(query, queryParams)
+        res.json(result.rows)
     }
     catch (err)
     {
