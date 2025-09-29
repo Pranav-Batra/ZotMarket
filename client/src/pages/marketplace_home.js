@@ -17,6 +17,7 @@ export function Item({item})
             <div className="item-info">
                 <h2 className="item-title">{item.title}</h2>
                 <p className="item-price">${item.price}</p>
+                <p>{item.category}</p>
                 <p className="item-date">{new Date(item.created_at).toLocaleDateString()}</p>
                 <button className="view-button" onClick={handleOnClick}>
                     View in Detail
