@@ -6,7 +6,7 @@ router = express.Router()
 router.get('/', async (req, res) => {
     try
     {
-        const items = await db.query('SELECT * FROM items')
+        const items = await db.query('SELECT * FROM items ORDER BY created_at DESC')
         console.log(items.rows)
         res.json(items.rows)
     }
@@ -29,20 +29,25 @@ router.get('/:id/detail', async (req, res) => {
         const detailItem = await db.query('SELECT * FROM items WHERE id=$1', [req.params.id])
         const itemID = detailItem.rows[0].id
         let userSavedOrNot = false
+        let userOwnsOrNot = false
         if (Number.isInteger(userID))
         {
             const result = await db.query('SELECT EXISTS (SELECT 1 FROM saved_items WHERE saved_item_id = $1 AND user_saving_id = $2)', [itemID, userID])
+            const writer = await db.query('SELECT EXISTS (SELECT 1 FROM items WHERE id = $1 AND user_id = $2)', [itemID, userID])
             if (result.rows && result.rows.length > 0)
             {
                 userSavedOrNot = result.rows[0].exists 
+                userOwnsOrNot = writer.rows[0].exists
             }
         }
         console.log(`UserSaved: ${userSavedOrNot}`)
+        console.log(`User Can Delete: ${userOwnsOrNot}`)
             res.json({
                 item:
                 {
                 ...detailItem.rows[0],
-                isSaved: userSavedOrNot
+                isSaved: userSavedOrNot,
+                writtenByUser: userOwnsOrNot
                 }
             })
     }
@@ -102,8 +107,11 @@ router.post('/new', async (req, res) => {
 
 router.delete('/:id', async (req, res) => {
     const id = req.params.id
-    const user_who_posted_id = db.query('SELECT user_id FROM items WHERE id=$1', [id])
-    if (req.user.id !== user_who_posted_id)
+    const user_who_posted_id = await db.query('SELECT user_id FROM items WHERE id=$1', [id])
+    const userPosted = user_who_posted_id.rows[0].user_id
+    console.log(id)
+    console.log(userPosted)
+    if (req.user.id !== userPosted)
     {
         res.status(404).send("Invalid permissions.")
         return
@@ -168,8 +176,25 @@ router.get('/saved', async (req, res) => {
     }
     try
     {
-        const saved_items = await db.query("SELECT * FROM items JOIN saved_items ON items.id = saved_items.saved_item_id WHERE saved_items.user_saving_id = $1", [req.user.id])
-        res.json(saved_items.rows)
+        const saved_items = await db.query(`
+        SELECT 
+            items.id,
+            items.title,
+            items.description,
+            items.price,
+            items.image_url,
+            items.created_at AS item_created_at, -- original item post date
+            saved_items.created_at AS saved_at   -- saved date (for ordering)
+        FROM items
+        JOIN saved_items 
+          ON items.id = saved_items.saved_item_id
+        WHERE saved_items.user_saving_id = $1
+        ORDER BY saved_items.created_at DESC   -- ✅ sort by saved time
+    `, [req.user.id])
+        res.json(saved_items.rows.map(row => ({
+            ...row, 
+            created_at : row.item_created_at
+        })))
         console.log(saved_items)
     }
     catch (err)
@@ -178,5 +203,6 @@ router.get('/saved', async (req, res) => {
         res.status(500).send("Internal Server Error.")
     }
 })
+
 
 module.exports = router;

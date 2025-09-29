@@ -2,10 +2,12 @@ import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import SaveButton from '../components/save_button'
 import '../styles/ItemDetailView.css'
+import DeleteButton from '../components/delete_button'
 
-function ItemDetailView() {
+function ItemDetailView({}) {
   const { id } = useParams()
   const [item, setItem] = useState(null)
+  const [canDelete, setCanDelete] = useState(false)
 
   useEffect(() => {
     const fetchItem = async () => {
@@ -18,6 +20,7 @@ function ItemDetailView() {
         const data = await response.json()
         const item = data.item
         setItem(item)
+        setCanDelete(item.writtenByUser)
       } catch (err) {
         console.log("Error: ", err)
       }
@@ -45,6 +48,7 @@ function ItemDetailView() {
         <p className="item-description">{item.description}</p>
         <p className="item-date">Posted on {new Date(item.created_at).toLocaleDateString()}</p>
         <SaveButton postID={item.id} isSaved={item.isSaved} />
+        {canDelete ? (<DeleteButton postID={item.id} className="delete-button" />) : (<></>)}
       </div>
     </div>
   )

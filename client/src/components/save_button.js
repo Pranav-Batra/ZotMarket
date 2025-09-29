@@ -1,5 +1,6 @@
 import {React} from 'react'
 import {Navigate, useNavigate, useState} from 'react'
+import '../styles/ItemDetailView.css'
 
 
 function SaveButton({postID, isSaved}) 
@@ -11,7 +12,7 @@ function SaveButton({postID, isSaved})
         try
         {
             const response = await fetch(`http://localhost:3000/marketplace/save/${postID}`, {
-                method: isSaved ? "DELETE" : "POST",
+                method: itemSaved ? "DELETE" : "POST",
                 headers: {"Content-Type": "Application/JSON"},
                 credentials: "include",
             })
@@ -32,7 +33,7 @@ function SaveButton({postID, isSaved})
         }
     }
     return (
-        <button onClick={onClickHandler}>
+        <button onClick={onClickHandler} className="save-button">
             {itemSaved ? "Unsave Post": "Save Post"}
         </button>
     )

@@ -23,7 +23,7 @@ function Navbar({ user }) {
           </>
         ) : (
           <a href="http://localhost:3000/auth/google/">
-            <button className="nav-button login">Login with Google</button>
+            <button className="nav-button login">Login with UCI</button>
           </a>
         )}
       </div>
