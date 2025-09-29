@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import PostButton from './post_button';
 import '../styles/Navbar.css';
+import ViewSavedPosts from './view_saved_posts_button';
 
 function Navbar({ user }) {
   return (
@@ -14,10 +15,11 @@ function Navbar({ user }) {
       <div className="navbar-right">
         {user ? (
           <>
+            <PostButton />
+            <ViewSavedPosts />
             <a href="http://localhost:3000/auth/logout/">
               <button className="nav-button logout">Logout</button>
             </a>
-            <PostButton />
           </>
         ) : (
           <a href="http://localhost:3000/auth/google/">

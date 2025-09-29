@@ -2,14 +2,16 @@ import {React} from 'react'
 import {Navigate, useNavigate, useState} from 'react'
 
 
-function SaveButton({postID}) {
+function SaveButton({postID, isSaved}) 
+{
     const [user, setUser] = useState(null)
+    const [itemSaved, setItemSaved] = useState(isSaved)
     const onClickHandler = async () => 
     {
         try
         {
             const response = await fetch(`http://localhost:3000/marketplace/save/${postID}`, {
-                method: "POST",
+                method: isSaved ? "DELETE" : "POST",
                 headers: {"Content-Type": "Application/JSON"},
                 credentials: "include",
             })
@@ -17,8 +19,12 @@ function SaveButton({postID}) {
             {
                 throw new Error("Failed to save post.")
             }
+            setItemSaved(!itemSaved)
+
+
             const data = await response.json()
             console.log("Item saved: ", data)
+
         }
         catch (err)
         {
@@ -26,7 +32,9 @@ function SaveButton({postID}) {
         }
     }
     return (
-        <button onClick={onClickHandler}>Save Post</button>
+        <button onClick={onClickHandler}>
+            {itemSaved ? "Unsave Post": "Save Post"}
+        </button>
     )
 }
 

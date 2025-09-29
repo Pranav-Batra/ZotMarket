@@ -52,6 +52,11 @@
     background: #0056b3;
     transform: translateY(-2px);
   }
+
+  .nav-button.saved {
+    background: green;
+    color: white
+  }
   
   /* Logout button */
   .nav-button.logout {

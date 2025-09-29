@@ -21,15 +21,40 @@ router.get('/', async (req, res) => {
 router.get('/:id/detail', async (req, res) => {
     try
     {
+        userID = null
+        if (req.user)
+        {
+            userID = req.user.id
+        }
         const detailItem = await db.query('SELECT * FROM items WHERE id=$1', [req.params.id])
-        res.json(detailItem.rows[0])
+        const itemID = detailItem.rows[0].id
+        let userSavedOrNot = false
+        if (Number.isInteger(userID))
+        {
+            const result = await db.query('SELECT EXISTS (SELECT 1 FROM saved_items WHERE saved_item_id = $1 AND user_saving_id = $2)', [itemID, userID])
+            if (result.rows && result.rows.length > 0)
+            {
+                userSavedOrNot = result.rows[0].exists 
+            }
+        }
+        console.log(`UserSaved: ${userSavedOrNot}`)
+            res.json({
+                item:
+                {
+                ...detailItem.rows[0],
+                isSaved: userSavedOrNot
+                }
+            })
     }
+        // res.json(detailItem.rows[0])
     catch (err)
     {
         console.error(err)
         res.status(500).send("DB Request Failed.")
     }
 })
+
+
 router.put('/:id', async (req, res) => {
     const id = req.params.id
     const user_who_posted_id = db.query('SELECT user_id FROM items WHERE id=$1', [id])
@@ -109,6 +134,43 @@ router.post('/save/:id', async (req, res) => {
         console.log(saved_item.rows)
         res.json(saved_item)
         // res.status(200).send("Successfully saved item.")
+    }
+    catch (err)
+    {
+        console.error("Error: ", err)
+        res.status(500).send("Internal Server Error.")
+    }
+})
+
+router.delete('/save/:id', async (req, res) => {
+    const id = req.params.id
+    if (!req.user)
+    {
+        return res.status(404).send("Invalid permissions.")
+    }
+    try
+    {
+        const deleted_save = await db.query('DELETE FROM saved_items WHERE saved_item_id = $1 and user_saving_id = $2', [id, req.user.id])
+        console.log(deleted_save.rows)
+        res.json(deleted_save.rows[0])
+    }
+    catch (error)
+    {
+        console.error("Error: ", err)
+        res.status(500).send("Internal Server Error.")
+    }
+})
+
+router.get('/saved', async (req, res) => {
+    if (!req.user)
+    {
+        return res.status(404).send("Invalid permissions.")
+    }
+    try
+    {
+        const saved_items = await db.query("SELECT * FROM items JOIN saved_items ON items.id = saved_items.saved_item_id WHERE saved_items.user_saving_id = $1", [req.user.id])
+        res.json(saved_items.rows)
+        console.log(saved_items)
     }
     catch (err)
     {

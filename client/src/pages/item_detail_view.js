@@ -16,7 +16,8 @@ function ItemDetailView() {
           throw new Error("failed to fetch.")
         }
         const data = await response.json()
-        setItem(data)
+        const item = data.item
+        setItem(item)
       } catch (err) {
         console.log("Error: ", err)
       }
@@ -25,7 +26,7 @@ function ItemDetailView() {
   }, [id])
 
   if (!item) return <p>Loading item detail...</p>
-
+  console.log(item.isSaved)
   return (
     <div className="item-detail-container">
       {/* Left: image */}
@@ -43,7 +44,7 @@ function ItemDetailView() {
         <p className="item-price">${item.price}</p>
         <p className="item-description">{item.description}</p>
         <p className="item-date">Posted on {new Date(item.created_at).toLocaleDateString()}</p>
-        <SaveButton postID={item.id} />
+        <SaveButton postID={item.id} isSaved={item.isSaved} />
       </div>
     </div>
   )

@@ -6,6 +6,7 @@ import Navbar from './components/navbar';
 import ItemDetailView from './pages/item_detail_view'
 import NewPost from './forms/new_item';
 import {useState, useEffect} from 'react'
+import SavedPosts from './pages/view_saved_posts';
 
 function App() {
   const [user, setUser] = useState(null)
@@ -38,6 +39,7 @@ function App() {
         <Route path='/' element={<Home />} />
         <Route path='/marketplace/:id/detail' element={<ItemDetailView />} />
         <Route path='/marketplace/new' element={<NewPost />} />
+        <Route path='/marketplace/saved' element={<SavedPosts />} />
       </Routes>
     </Router>
   </div>

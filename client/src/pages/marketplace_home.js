@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import { Navigate, useNavigate } from 'react-router-dom'
 import '../styles/Home.css'
 
-function Item({item}) 
+export function Item({item}) 
 {
     const navigate = useNavigate()
     const handleOnClick = () => {
